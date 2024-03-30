@@ -1,20 +1,55 @@
 #pragma once
-#include <string>
-namespace cdp {
-namespace singleton {
+#include <mutex>
 
-class Singleton {
+// 饿汉式
+class ClassicSingleton {
  private:
-  // 将构造函数隐藏起来
-  Singleton() {}
+  ClassicSingleton() = default;
+  ~ClassicSingleton() = default;
+  ClassicSingleton& operator=(const ClassicSingleton& other) = delete;
+  ClassicSingleton(const ClassicSingleton& other) = delete;
+ private:
+  static ClassicSingleton* instance;
  public:
-  static Singleton* GetInstance();
-  // 禁用拷贝构造和拷贝复制
-  Singleton(const Singleton& other) = delete;
-  Singleton& operator=(const Singleton& other) = delete;
+  static ClassicSingleton& getInstance() {
+    return *instance;
+  }
 };
 
-void UsageExampleForSingleton();
 
-} // namespace singleton
-} // namespace cdp
+// 懒汉式1
+class MayersSingleton {
+ private:
+  MayersSingleton() = default;
+  ~MayersSingleton() = default;
+  MayersSingleton& operator=(const MayersSingleton& other) = delete;
+  MayersSingleton(const MayersSingleton& other) = delete;
+ public:
+  static MayersSingleton& getInstance() {
+    static MayersSingleton instance;
+    return instance;
+  }
+};
+
+// 懒汉式2
+class DoubleCheckSingleton {
+ private:
+  DoubleCheckSingleton() = default;
+  ~DoubleCheckSingleton() = default;
+  DoubleCheckSingleton& operator=(const DoubleCheckSingleton& other) = delete;
+  DoubleCheckSingleton(const DoubleCheckSingleton& other) = delete;
+
+ private:
+  static DoubleCheckSingleton* instance;
+  static std::mutex mutex;
+ public:
+  static DoubleCheckSingleton& getInstance() {
+    if (instance == nullptr) {
+      std::lock_guard<std::mutex> lock(mutex);
+      if (instance == nullptr) {
+        instance = new DoubleCheckSingleton();
+      }
+    }
+    return *instance;
+  }
+};
