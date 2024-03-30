@@ -8,14 +8,13 @@ class ClassicSingleton {
   ~ClassicSingleton() = default;
   ClassicSingleton& operator=(const ClassicSingleton& other) = delete;
   ClassicSingleton(const ClassicSingleton& other) = delete;
+
  private:
   static ClassicSingleton* instance;
- public:
-  static ClassicSingleton& getInstance() {
-    return *instance;
-  }
-};
 
+ public:
+  static ClassicSingleton& getInstance() { return *instance; }
+};
 
 // 懒汉式1
 class MayersSingleton {
@@ -24,6 +23,7 @@ class MayersSingleton {
   ~MayersSingleton() = default;
   MayersSingleton& operator=(const MayersSingleton& other) = delete;
   MayersSingleton(const MayersSingleton& other) = delete;
+
  public:
   static MayersSingleton& getInstance() {
     static MayersSingleton instance;
@@ -42,6 +42,7 @@ class DoubleCheckSingleton {
  private:
   static DoubleCheckSingleton* instance;
   static std::mutex mutex;
+
  public:
   static DoubleCheckSingleton& getInstance() {
     if (instance == nullptr) {
